@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -27,11 +28,11 @@ public class Club {
 
     private String urlImg;
 
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     private Boolean active;
 
-    @OneToMany
+    @OneToOne
     @JoinColumn(name = "stadium_id")
     private Stadium stadium;
 
