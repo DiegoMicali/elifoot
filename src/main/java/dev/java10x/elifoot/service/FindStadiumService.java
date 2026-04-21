@@ -2,6 +2,8 @@ package dev.java10x.elifoot.service;
 
 import dev.java10x.elifoot.Mapper.StadiumMapper;
 import dev.java10x.elifoot.controller.response.StadiumResponse;
+import dev.java10x.elifoot.entity.Stadium;
+import dev.java10x.elifoot.exceptions.ResourceNotFoundException;
 import dev.java10x.elifoot.repository.StadiumRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,4 +22,10 @@ public class FindStadiumService {
         return stadiumRepository.findAll(pageable)
                 .map(stadiumMapper::toStadiumResponse);
     }
+
+    public Stadium findById(Long id) {
+        return stadiumRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Stadium not found for id: " + id));
+    }
+
 }
