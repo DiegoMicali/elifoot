@@ -1,7 +1,6 @@
 package dev.java10x.elifoot.service;
 
-import dev.java10x.elifoot.Mapper.ClubMapper;
-import dev.java10x.elifoot.controller.response.ClubDetailResponse;
+import dev.java10x.elifoot.mapper.ClubMapper;
 import dev.java10x.elifoot.controller.response.ClubResponse;
 import dev.java10x.elifoot.entity.Club;
 import dev.java10x.elifoot.exceptions.ResourceNotFoundException;

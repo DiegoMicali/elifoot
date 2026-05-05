@@ -1,6 +1,6 @@
 package dev.java10x.elifoot.service;
 
-import dev.java10x.elifoot.Mapper.PlayerMapper;
+import dev.java10x.elifoot.mapper.PlayerMapper;
 import dev.java10x.elifoot.controller.request.CreatePlayerRequest;
 import dev.java10x.elifoot.controller.response.PlayerResponse;
 import dev.java10x.elifoot.entity.Player;

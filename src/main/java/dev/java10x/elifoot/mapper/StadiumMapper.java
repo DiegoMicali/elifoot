@@ -1,4 +1,4 @@
-package dev.java10x.elifoot.Mapper;
+package dev.java10x.elifoot.mapper;
 
 
 import dev.java10x.elifoot.controller.request.CreateStadiumRequest;

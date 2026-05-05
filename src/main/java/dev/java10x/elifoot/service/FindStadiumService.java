@@ -1,6 +1,6 @@
 package dev.java10x.elifoot.service;
 
-import dev.java10x.elifoot.Mapper.StadiumMapper;
+import dev.java10x.elifoot.mapper.StadiumMapper;
 import dev.java10x.elifoot.controller.response.StadiumResponse;
 import dev.java10x.elifoot.entity.Stadium;
 import dev.java10x.elifoot.exceptions.ResourceNotFoundException;

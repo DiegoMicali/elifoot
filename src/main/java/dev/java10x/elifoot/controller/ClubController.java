@@ -1,6 +1,6 @@
 package dev.java10x.elifoot.controller;
 
-import dev.java10x.elifoot.Mapper.ClubMapper;
+import dev.java10x.elifoot.mapper.ClubMapper;
 import dev.java10x.elifoot.controller.request.CreateClubRequest;
 import dev.java10x.elifoot.controller.response.ClubDetailResponse;
 import dev.java10x.elifoot.controller.response.ClubResponse;
