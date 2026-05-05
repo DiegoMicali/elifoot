@@ -4,6 +4,7 @@ import dev.java10x.elifoot.controller.request.CreateStadiumRequest;
 import dev.java10x.elifoot.controller.response.StadiumResponse;
 import dev.java10x.elifoot.service.CreateStadiumService;
 import dev.java10x.elifoot.service.FindStadiumService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ public class StadiumController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StadiumResponse create(@RequestBody CreateStadiumRequest request) {
+    public StadiumResponse create(@Valid @RequestBody CreateStadiumRequest request) {
         return createStadiumService.execute(request);
     }
 }
