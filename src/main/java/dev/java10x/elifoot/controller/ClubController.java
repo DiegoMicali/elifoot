@@ -1,5 +1,6 @@
 package dev.java10x.elifoot.controller;
 
+import dev.java10x.elifoot.controller.response.PlayerResponse;
 import dev.java10x.elifoot.mapper.ClubMapper;
 import dev.java10x.elifoot.controller.request.CreateClubRequest;
 import dev.java10x.elifoot.controller.response.ClubDetailResponse;
@@ -7,12 +8,16 @@ import dev.java10x.elifoot.controller.response.ClubResponse;
 import dev.java10x.elifoot.entity.Club;
 import dev.java10x.elifoot.service.CreateClubService;
 import dev.java10x.elifoot.service.FindClubService;
+import dev.java10x.elifoot.service.FindPlayerService;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RequestMapping("/clubs")
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class ClubController {
 
     private final FindClubService findClubService;
+    private final FindPlayerService findPlayerService;
     private final CreateClubService createClubService;
     private final ClubMapper clubMapper;
 
@@ -41,5 +47,10 @@ public class ClubController {
     @ResponseStatus(HttpStatus.CREATED)
     public ClubDetailResponse creat(@Valid @RequestBody CreateClubRequest request) {
         return createClubService.execute(request);
+    }
+
+    @GetMapping("/{id}/players")
+    public List<PlayerResponse> findPlayerByClubId(@PathVariable long id) {
+        return findPlayerService.findByClubId(id);
     }
 }
