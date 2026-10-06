@@ -1,5 +1,7 @@
 package dev.java10x.elifoot.controller;
 
+import dev.java10x.elifoot.config.security.annotation.club.CanReadClub;
+import dev.java10x.elifoot.config.security.annotation.club.CanWriteClub;
 import dev.java10x.elifoot.controller.response.PlayerResponse;
 import dev.java10x.elifoot.mapper.ClubMapper;
 import dev.java10x.elifoot.controller.request.CreateClubRequest;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,11 +33,14 @@ public class ClubController {
     private final CreateClubService createClubService;
     private final ClubMapper clubMapper;
 
+    @CanReadClub
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<ClubResponse> findAll(Pageable pageable) {
         return findClubService.findAll(pageable);
     }
+
+    @CanReadClub
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -43,12 +49,14 @@ public class ClubController {
         return clubMapper.toClubDetailResponse(club);
     }
 
+    @CanWriteClub
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ClubDetailResponse creat(@Valid @RequestBody CreateClubRequest request) {
         return createClubService.execute(request);
     }
 
+    @CanWriteClub
     @GetMapping("/{id}/players")
     public List<PlayerResponse> findPlayerByClubId(@PathVariable long id) {
         return findPlayerService.findByClubId(id);
