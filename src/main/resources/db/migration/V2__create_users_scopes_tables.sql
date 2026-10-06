@@ -1,0 +1,9 @@
+CREATE SEQUENCE users_seq START WITH 1 INCREMENT by 1;
+
+CREATE TABLE users (
+    id       BIGINT PRIMARY KEY DEFAULT NEXTVAL('users_seq'),
+    name     VARCHAR(100) NOT NULL,
+    email    VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    active   BOOLEAN      NOT NULL DEFAULT true
+);
