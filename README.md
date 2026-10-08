@@ -1,6 +1,6 @@
 # ⚽ EliFoot API
 
-API REST para gerenciamento de clubes de futebol — estádios, clubes e jogadores — construída com **Java 17 + Spring Boot 3**, autenticação **OAuth2 / JWT (RS256)** e autorização granular por **escopos**.
+REST API for managing football clubs — stadiums, clubs and players — built with **Java 17 + Spring Boot 3**, **OAuth2 / JWT (RS256)** authentication and fine-grained **scope-based** authorization.
 
 <p>
   <img alt="Java" src="https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white">
@@ -11,29 +11,29 @@ API REST para gerenciamento de clubes de futebol — estádios, clubes e jogador
 
 ---
 
-## 📋 Sobre o projeto
+## 📋 About
 
-O EliFoot expõe um CRUD completo de um domínio futebolístico com relacionamentos reais (`Stadium 1:1 Club 1:N Player`), paginação, validação de payloads, conversão DTO ↔ entidade via MapStruct e versionamento de schema com Flyway.
+EliFoot exposes a full CRUD over a football domain with real relationships (`Stadium 1:1 Club 1:N Player`), pagination, payload validation, DTO ↔ entity mapping via MapStruct and schema versioning with Flyway.
 
-A camada de segurança implementa um **Authorization Server + Resource Server** próprios: o login emite um JWT assinado com chave RSA privada, e cada endpoint é protegido por **anotações customizadas** que traduzem escopos em regras de acesso.
+The security layer implements its own **Authorization Server + Resource Server**: login issues a JWT signed with an RSA private key, and every endpoint is guarded by **custom annotations** that translate scopes into access rules.
 
 ---
 
-## 🛠 Tecnologias
+## 🛠 Tech stack
 
-| Categoria | Stack |
+| Category | Stack |
 |---|---|
-| Linguagem | Java 17 |
+| Language | Java 17 |
 | Framework | Spring Boot 3.5.13 (Web, Data JPA, Validation) |
-| Segurança | Spring Security · OAuth2 Resource Server · JWT RS256 (Nimbus) · BCrypt |
-| Persistência | PostgreSQL · Hibernate · Flyway |
-| Mapeamento | MapStruct · Lombok |
-| Testes | JUnit 5 · Mockito · Testcontainers · Spring Security Test |
-| Build | Maven (wrapper incluso) |
+| Security | Spring Security · OAuth2 Resource Server · JWT RS256 (Nimbus) · BCrypt |
+| Persistence | PostgreSQL · Hibernate · Flyway |
+| Mapping | MapStruct · Lombok |
+| Testing | JUnit 5 · Mockito · Testcontainers · Spring Security Test |
+| Build | Maven (wrapper included) |
 
 ---
 
-## 🏗 Arquitetura
+## 🏗 Architecture
 
 ```
 src/main/java/dev/java10x/elifoot
@@ -42,10 +42,10 @@ src/main/java/dev/java10x/elifoot
 │   └── security
 │       ├── SecurityConfig.java          # filter chain, JWT encoder/decoder, BCrypt
 │       └── annotation/{club,player,stadium}
-│           └── Can{Read,Write}*.java    # anotações customizadas de autorização
+│           └── Can{Read,Write}*.java    # custom authorization annotations
 ├── controller
-│   ├── request/                         # DTOs de entrada (+ Bean Validation)
-│   └── response/                        # DTOs de saída
+│   ├── request/                         # inbound DTOs (+ Bean Validation)
+│   └── response/                        # outbound DTOs
 ├── entity                               # Stadium, Club, Player, User, Scope, Position
 ├── exceptions                           # ResourceNotFound, ResourceAlreadyExists
 ├── mapper                               # MapStruct
@@ -53,31 +53,31 @@ src/main/java/dev/java10x/elifoot
 └── service                              # Find* / Create* / LoginService
 ```
 
-**Modelo de dados**
+**Data model**
 
 ```
 stadium 1──1 club 1──N player
-users N──N scopes  (via users_scopes)
+users N──N scopes  (through users_scopes)
 ```
 
 ---
 
-## 🔐 Segurança
+## 🔐 Security
 
-**Fluxo:** `POST /login` valida as credenciais com BCrypt, carrega os escopos do usuário e emite um JWT **RS256** (claims `sub`, `email`, `scope`), com validade de **600s**. As requisições seguintes enviam `Authorization: Bearer <token>` e são validadas pelo Resource Server com a chave pública.
+**Flow:** `POST /login` checks the credentials with BCrypt, loads the user's scopes and issues an **RS256** JWT (claims `sub`, `email`, `scope`) valid for **600s**. Subsequent requests send `Authorization: Bearer <token>` and are validated by the Resource Server using the public key.
 
-A sessão é **stateless** e o CSRF está desabilitado — o padrão para APIs com token.
+Sessions are **stateless** and CSRF is disabled — the standard setup for token-based APIs.
 
-**Escopos disponíveis**
+**Available scopes**
 
-| Escopo | Permite |
+| Scope | Grants |
 |---|---|
-| `admin:all` | acesso total a todos os recursos |
-| `stadium:read` / `stadium:write` | listar / criar estádios |
-| `club:read` / `club:write` | listar / criar clubes |
-| `player:read` / `player:write` | listar / criar jogadores |
+| `admin:all` | full access to every resource |
+| `stadium:read` / `stadium:write` | list / create stadiums |
+| `club:read` / `club:write` | list / create clubs |
+| `player:read` / `player:write` | list / create players |
 
-As regras ficam encapsuladas em anotações, mantendo os controllers limpos:
+Rules are encapsulated in annotations, keeping controllers clean:
 
 ```java
 @Target({ElementType.METHOD, ElementType.TYPE})
@@ -88,35 +88,35 @@ public @interface CanWriteClub { }
 
 ---
 
-## 🚀 Como executar
+## 🚀 Getting started
 
-### Pré-requisitos
+### Prerequisites
 - JDK 17+
-- Docker (ou um PostgreSQL local)
+- Docker (or a local PostgreSQL)
 
-### 1. Banco de dados
+### 1. Database
 
 ```bash
 docker run --name elifoot-db -e POSTGRES_DB=elifoot -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16
 ```
 
-### 2. Chaves RSA
+### 2. RSA keys
 
-As chaves **não são versionadas**. Gere o par em `src/main/resources`:
+The keys are **not versioned**. Generate the pair under `src/main/resources`:
 
 ```bash
 openssl genrsa -out src/main/resources/authz.pem 2048 && openssl rsa -in src/main/resources/authz.pem -pubout -out src/main/resources/authz.pub
 ```
 
-### 3. Subir a aplicação
+### 3. Run the application
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-O Flyway cria o schema automaticamente. A API sobe em `http://localhost:8080`.
+Flyway creates the schema automatically. The API starts at `http://localhost:8080`.
 
-### 4. Popular os escopos
+### 4. Seed the scopes
 
 ```sql
 INSERT INTO scopes (name) VALUES
@@ -128,11 +128,11 @@ INSERT INTO scopes (name) VALUES
 
 ## 📡 Endpoints
 
-| Método | Rota | Escopo exigido |
+| Method | Route | Required scope |
 |---|---|---|
-| `POST` | `/users` | público |
-| `POST` | `/login` | público |
-| `GET` | `/resources/positions` | autenticado |
+| `POST` | `/users` | public |
+| `POST` | `/login` | public |
+| `GET` | `/resources/positions` | authenticated |
 | `GET` | `/stadiums` | `stadium:read` |
 | `POST` | `/stadiums` | `stadium:write` |
 | `GET` | `/clubs` | `club:read` |
@@ -143,17 +143,17 @@ INSERT INTO scopes (name) VALUES
 | `GET` | `/players/{id}` | `player:read` |
 | `POST` | `/players` | `player:write` |
 
-> Endpoints de listagem aceitam paginação do Spring Data: `?page=0&size=10&sort=name,asc`.
+> List endpoints support Spring Data pagination: `?page=0&size=10&sort=name,asc`.
 
-### Exemplo de uso
+### Usage example
 
-**Criar usuário**
+**Create a user**
 
 ```bash
 curl -X POST http://localhost:8080/users -H 'Content-Type: application/json' -d '{"name":"Diego","email":"diego@elifoot.dev","password":"123456","scopes":[1]}'
 ```
 
-**Autenticar**
+**Authenticate**
 
 ```bash
 curl -X POST http://localhost:8080/login -H 'Content-Type: application/json' -d '{"email":"diego@elifoot.dev","password":"123456"}'
@@ -163,7 +163,7 @@ curl -X POST http://localhost:8080/login -H 'Content-Type: application/json' -d 
 { "accessToken": "eyJhbGciOiJSUzI1NiJ9...", "expiresIn": 600 }
 ```
 
-**Criar um estádio**
+**Create a stadium**
 
 ```bash
 curl -X POST http://localhost:8080/stadiums -H 'Content-Type: application/json' -H "Authorization: Bearer $TOKEN" -d '{"name":"Maracanã","city":"Rio de Janeiro","capacity":78838}'
@@ -171,16 +171,36 @@ curl -X POST http://localhost:8080/stadiums -H 'Content-Type: application/json' 
 
 ---
 
-## 🧪 Testes
+## 🧪 Tests
 
 ```bash
 ./mvnw test
 ```
 
-Estratégia adotada no projeto:
+Testing strategy for the project:
 
-- **Unitários** — services isolados com JUnit 5 + Mockito;
-- **Integração** — ciclo HTTP completo com `MockMvc`, `spring-security-test` e PostgreSQL real via **Testcontainers**;
-- **Cobertura** — relatório JaCoCo em `target/site/jacoco/index.html`.
+- **Unit** — services in isolation with JUnit 5 + Mockito;
+- **Integration** — full HTTP cycle with `MockMvc`, `spring-security-test` and a real PostgreSQL through **Testcontainers**;
+- **Coverage** — JaCoCo report at `target/site/jacoco/index.html`.
 
+---
 
+## 🗺 Roadmap
+
+- [x] Project setup, entities and migrations
+- [x] Stadium, Club and Player resources
+- [x] DTOs with MapStruct and pagination
+- [x] OAuth2 + JWT, login and user sign-up
+- [x] Scope-based authorization with custom annotations
+- [x] Global exception handler (`@ControllerAdvice`)
+- [ ] Unit tests with Mockito
+- [ ] Integration tests with Testcontainers
+- [ ] Coverage report with JaCoCo
+
+---
+
+## 👤 Author
+
+**Diego Micali** — [GitHub](https://github.com/DiegoMicali)
+
+Built as part of the **Java10x** course.

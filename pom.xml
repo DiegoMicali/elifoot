@@ -95,7 +95,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--- TESTES -->
+		<!-- TESTS -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

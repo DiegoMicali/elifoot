@@ -29,7 +29,7 @@ public class LoginService {
         Optional<User> optUser = userRepository.findByEmail(request.getEmail());
 
         if(optUser.isEmpty() || !isPasswordCorrect(request.getPassword(), optUser.get().getPassword())) {
-            throw new BadCredentialsException("Usário ou senha inválido");
+            throw new BadCredentialsException("Invalid email or password");
         }
 
         User savedUser = optUser.get();
