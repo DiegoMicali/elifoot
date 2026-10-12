@@ -3,15 +3,13 @@ package dev.java10x.elifoot.controller.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
-@NoArgsConstructor
 public class CreateUserRequest {
 
     @NotBlank
