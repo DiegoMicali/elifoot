@@ -1,7 +1,6 @@
 package dev.java10x.elifoot.mapper;
 
 import dev.java10x.elifoot.controller.request.CreateStadiumRequest;
-import dev.java10x.elifoot.controller.request.CreateUserRequest;
 import dev.java10x.elifoot.controller.response.StadiumResponse;
 import dev.java10x.elifoot.entity.Stadium;
 import org.junit.jupiter.api.DisplayName;
